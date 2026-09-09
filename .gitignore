@@ -1,0 +1,10 @@
+# Environment / secrets
+.env
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Editor
+.vscode/
+.idea/

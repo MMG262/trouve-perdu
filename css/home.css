@@ -1,0 +1,49 @@
+/* Layout specific to the public home page and the logged-in dashboard.
+   Navbar and button styling live in theme.css. */
+
+.bienvenue {
+    text-align: center;
+    margin-top: 24px;
+    font-size: 20px;
+    color: var(--color-text-muted);
+}
+
+.bienvenue strong {
+    color: var(--color-primary);
+}
+
+/* .text-grand-format is reused here just for color; override its hero
+   font-size so the username doesn't inherit the giant headline size. */
+.bienvenue .text-grand-format {
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.text-grand-format {
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: 36px;
+    line-height: 1.2;
+    color: var(--color-text);
+}
+
+.text-petit-format {
+    font-size: 17px;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+}
+
+.text-petit-format span {
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
+/* Buttons should line up with the left-aligned headline/text above them,
+   not sit centered under a narrower column. */
+.btn-container {
+    justify-content: flex-start;
+}
+
+.image1 img {
+    width: 100%;
+}

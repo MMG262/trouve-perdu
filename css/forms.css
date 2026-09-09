@@ -1,0 +1,30 @@
+/* Layout specific to login / register / object-declaration forms.
+   Navbar, card, button and input styling live in theme.css. */
+
+.text {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+}
+
+.inputContainer {
+    display: flex;
+    justify-content: center;
+}
+
+.input {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 320px;
+    margin-top: 20px;
+}
+
+.input1 {
+    display: flex;
+    align-items: center;
+}

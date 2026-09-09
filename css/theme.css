@@ -1,0 +1,361 @@
+/* ==========================================================================
+   FIND&LOSE — shared design system
+   Loaded on every page, after Bootstrap and before the page-specific
+   stylesheet. Page stylesheets should only contain page-specific layout,
+   not re-declare navbar/buttons/cards/inputs — those live here.
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap');
+
+:root {
+    --color-primary: #0014B7;
+    --color-primary-dark: #000C82;
+    --color-primary-light: #93D2F3;
+    --color-primary-soft: #EEF1FD;
+
+    --color-bg: #F4F6FC;
+    --color-surface: #FFFFFF;
+
+    --color-text: #171B2E;
+    --color-text-muted: #5B6072;
+    --color-border: #E3E7F1;
+
+    --color-success: #12875A;
+    --color-success-soft: #E7F7EF;
+    --color-warn: #B15400;
+    --color-warn-soft: #FFF4E5;
+    --color-danger: #D92D20;
+    --color-danger-soft: #FDECEB;
+    --color-info: #0B5FFF;
+    --color-info-soft: #E9F1FF;
+
+    --radius-sm: 10px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    --radius-pill: 999px;
+
+    --shadow-sm: 0 2px 8px rgba(17, 24, 65, 0.06);
+    --shadow-md: 0 12px 28px rgba(17, 24, 65, 0.10);
+    --shadow-lg: 0 24px 56px rgba(17, 24, 65, 0.16);
+
+    --font-heading: 'Poppins', 'Segoe UI', Arial, sans-serif;
+    --font-body: 'Inter', 'Segoe UI', Arial, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+}
+
+a {
+    transition: color .15s ease;
+}
+
+/* ---------- Navbar ---------- */
+
+.navbar {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    padding: 16px 50px;
+    box-shadow: var(--shadow-md);
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+}
+
+.navbar-brand span {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 26px;
+    letter-spacing: .5px;
+    color: white;
+}
+
+.navbar-toggler {
+    background-color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+}
+
+.nav-item a {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: .2px;
+}
+
+.nav-item a:hover {
+    color: var(--color-primary-light) !important;
+}
+
+#lien {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+#navbarSupportedContent {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+}
+
+.navbar-nav {
+    align-items: center;
+}
+
+.navbar-nav li {
+    padding-left: 12px;
+}
+
+/* Current-page indicator: label + small accent dot, inline instead of absolute.
+   Padding lives on the wrapper only — the nav-link's own padding is zeroed
+   below so this doesn't stack on top of it and throw off alignment. */
+.nav-item1 {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 16px;
+    border-radius: var(--radius-pill);
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.nav-item1 .nav-link {
+    padding: 0;
+}
+
+.nav-item1 a {
+    color: white !important;
+}
+
+.nav-item1 img {
+    width: 7px;
+    height: 7px;
+    display: block;
+}
+
+/* ---------- Buttons ---------- */
+
+.btn,
+.btn1,
+.btn2 {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    min-width: 150px;
+    padding: 11px 28px;
+    border: none;
+    border-radius: var(--radius-pill);
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform .15s ease, box-shadow .15s ease, background-color .15s ease, color .15s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+.btn:hover,
+.btn1:hover,
+.btn2:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn,
+.btn1 {
+    background-color: var(--color-primary);
+    color: white;
+}
+
+.btn:hover,
+.btn1:hover {
+    background-color: var(--color-primary-dark);
+}
+
+.btn a,
+.btn1 a {
+    text-decoration: none;
+    color: white;
+    font-weight: 600;
+}
+
+.btn2 {
+    background-color: var(--color-surface);
+    color: var(--color-primary);
+    border: 2px solid var(--color-primary);
+}
+
+.btn2:hover {
+    background-color: var(--color-primary-soft);
+}
+
+.btn2 a {
+    text-decoration: none;
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
+.btn-container,
+.btn-container1 {
+    padding-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+}
+
+.btn-container :hover,
+.btn-container1 :hover {
+    color: inherit;
+    background-color: inherit;
+    font-weight: inherit;
+}
+
+input[type="submit"].btn {
+    min-width: 180px;
+}
+
+/* ---------- Form cards & inputs ---------- */
+
+.formulaire,
+.formulaire1 {
+    background-color: var(--color-surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    margin-top: 32px;
+    margin-bottom: 32px;
+    padding: 48px 40px;
+}
+
+.formulaire h2,
+.formulaire1 h2 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    color: var(--color-text);
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.formulaire p,
+.formulaire1 p {
+    text-align: center;
+    color: var(--color-text-muted);
+}
+
+.formulaire p a,
+.formulaire1 p a {
+    color: var(--color-primary);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.formulaire p a:hover,
+.formulaire1 p a:hover {
+    color: var(--color-danger);
+}
+
+.formulaire1 .alert {
+    color: var(--color-danger);
+    font-weight: 600;
+}
+
+label {
+    font-family: var(--font-heading);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    margin-bottom: 6px;
+    display: block;
+}
+
+.input input,
+.input select {
+    width: 100%;
+    max-width: 320px;
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background-color: var(--color-surface);
+    padding: 12px 16px;
+    font-size: 15px;
+    font-family: var(--font-body);
+    color: var(--color-text);
+    transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.input input::placeholder {
+    color: #A2A7BD;
+}
+
+.input input:focus,
+.input select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 4px var(--color-primary-soft);
+}
+
+/* ---------- Item / listing cards ---------- */
+
+.choix {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 30px;
+    padding: 28px 24px;
+    transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.choix:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+}
+
+.choix h2 {
+    color: var(--color-text);
+    font-weight: 700;
+    font-size: 20px;
+    text-align: center;
+    margin-bottom: 14px;
+}
+
+.choix p {
+    margin-bottom: 6px;
+    color: var(--color-text-muted);
+}
+
+/* "Etat" badge: Perdu / Trouvé / Retrouvé / Réclamé */
+.choix p span {
+    display: inline-block;
+    padding: 3px 12px;
+    border-radius: var(--radius-pill);
+    background: var(--color-info-soft);
+    color: var(--color-info);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.choix p span.badge-warn {
+    background: var(--color-warn-soft);
+    color: var(--color-warn);
+}
+
+.choix p span.badge-success {
+    background: var(--color-success-soft);
+    color: var(--color-success);
+}
+
+.choix p span.badge-info {
+    background: var(--color-info-soft);
+    color: var(--color-info);
+}

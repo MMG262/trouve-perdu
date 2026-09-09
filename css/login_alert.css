@@ -1,0 +1,12 @@
+/* Layout specific to the "please log in" alert page.
+   Navbar, card and button styling live in theme.css. */
+
+.text {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+}

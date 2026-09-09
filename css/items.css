@@ -1,0 +1,19 @@
+/* Layout specific to the lost/found item listings and notifications.
+   Card and badge styling live in theme.css. */
+
+.choixContainer {
+    justify-content: space-around;
+    margin-top: 30px;
+}
+
+.container > h2 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    color: var(--color-text);
+    text-align: center;
+}
+
+.container > p {
+    text-align: center;
+    color: var(--color-text-muted);
+}
