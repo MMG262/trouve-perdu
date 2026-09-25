@@ -1,5 +1,6 @@
 <?php
-session_start();
+require_once __DIR__ . '/../includes/security.php';
+start_secure_session();
 require_once __DIR__ . '/../config/database.php';
 
 $_SESSION['objet'] = "Tablette";
@@ -11,6 +12,19 @@ if (empty($_SESSION['usernameverification']) && isset($_POST['soumissionOrdinate
 }
 
 if (isset($_POST['soumissionOrdinateur'])) {
+    verify_csrf();
+
+    // état is set by report_lost.php / report_found.php: without it we don't know
+    // whether the object was lost or found.
+    if (!in_array($_SESSION['état'] ?? null, ['Perdu', 'Trouver'], true)) {
+        header('Location: dashboard.php');
+        exit;
+    }
+    if (!post_fields_filled(['marque', 'couleur', 'date', 'lieu'])) {
+        http_response_code(400);
+        die('Veuillez remplir tous les champs du formulaire.');
+    }
+
     $req = $bdd->prepare('INSERT INTO objet (id_utilisateur, type_objet, état_objet, marque,
     couleur, dates, lieu) VALUES(?, ?, ?, ?, ?, ?, ?)');
     $req->execute(array(
@@ -29,7 +43,7 @@ if (isset($_POST['soumissionOrdinateur'])) {
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -69,6 +83,7 @@ if (isset($_POST['soumissionOrdinateur'])) {
             <div class="col-md-12 formulaire">
                 <h2>Veuillez remplir ce formulaire !</h2>
                 <form method="POST" action="">
+                <?php echo csrf_field(); ?>
                 <div class="sousContainer">
                     <div class="row">
                         <div class="col-md-6 sous">

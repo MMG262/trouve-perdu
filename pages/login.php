@@ -1,27 +1,25 @@
 <?php
-session_start();
+require_once __DIR__ . '/../includes/security.php';
+start_secure_session();
 require_once __DIR__ . '/../config/database.php';
 
 $bdd = db();
 
-// The registration form on register.php submits here.
-if (isset($_POST['inscrire'])) {
-    $req = $bdd->prepare('INSERT INTO user (prénom_user, nom_user, username, email, numéro_téléphone, mot_de_passe) VALUES(?, ?, ?, ?, ?, ?)');
-    $req->execute(array(
-        $_POST['prénom'],
-        $_POST['nom'],
-        $_POST['username'],
-        $_POST['email'],
-        $_POST['numéro_téléphone'],
-        password_hash($_POST['mot_de_passe'], PASSWORD_DEFAULT)
-    ));
+$message = '';
+if (isset($_GET['inscrit'])) {
+    $message = "<p style='color:green; font-weight:bold; font-size:17px'>
+                Inscription réussie, vous pouvez vous connecter.</p>";
 }
 
-$message = '';
 if (!empty($_POST['conecter'])) {
-    $req = $bdd->prepare('SELECT * FROM user WHERE username = ?');
-    $req->execute(array($_POST['usernameverification']));
-    $utilisateur = $req->fetch();
+    verify_csrf();
+
+    $utilisateur = false;
+    if (post_fields_filled(['usernameverification', 'mot_de_passeverification'])) {
+        $req = $bdd->prepare('SELECT * FROM user WHERE username = ?');
+        $req->execute(array($_POST['usernameverification']));
+        $utilisateur = $req->fetch();
+    }
 
     if ($utilisateur && password_verify($_POST['mot_de_passeverification'], $utilisateur['mot_de_passe'])) {
         // Regenerate the session id on login to prevent session fixation.
@@ -39,7 +37,7 @@ if (!empty($_POST['conecter'])) {
 
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -65,6 +63,7 @@ if (!empty($_POST['conecter'])) {
         </div>
       </nav>
       <form method="POST" action="">
+      <?php echo csrf_field(); ?>
       <div class="container">
         <div class="row">
             <div class="col-md-12 formulaire">

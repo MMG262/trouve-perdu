@@ -1,0 +1,2 @@
+# Internal files: not meant to be reachable over HTTP.
+Require all denied

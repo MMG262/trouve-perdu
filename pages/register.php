@@ -1,9 +1,44 @@
 <?php
-session_start();
+require_once __DIR__ . '/../includes/security.php';
+start_secure_session();
+require_once __DIR__ . '/../config/database.php';
+
+$erreur = '';
+if (isset($_POST['inscrire'])) {
+    verify_csrf();
+
+    if (!post_fields_filled(['prénom', 'nom', 'username', 'email', 'numéro_téléphone', 'mot_de_passe'])) {
+        $erreur = 'Veuillez remplir tous les champs.';
+    } elseif (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
+        $erreur = "L'adresse email n'est pas valide.";
+    } elseif (strlen($_POST['mot_de_passe']) < 8) {
+        $erreur = 'Le mot de passe doit contenir au moins 8 caractères.';
+    } else {
+        $bdd = db();
+        $req = $bdd->prepare('SELECT 1 FROM user WHERE username = ?');
+        $req->execute(array(trim($_POST['username'])));
+
+        if ($req->fetch()) {
+            $erreur = "Ce nom d'utilisateur est déjà pris.";
+        } else {
+            $req = $bdd->prepare('INSERT INTO user (prénom_user, nom_user, username, email, numéro_téléphone, mot_de_passe) VALUES(?, ?, ?, ?, ?, ?)');
+            $req->execute(array(
+                trim($_POST['prénom']),
+                trim($_POST['nom']),
+                trim($_POST['username']),
+                trim($_POST['email']),
+                trim($_POST['numéro_téléphone']),
+                password_hash($_POST['mot_de_passe'], PASSWORD_DEFAULT)
+            ));
+            header('Location: login.php?inscrit=1');
+            exit;
+        }
+    }
+}
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,11 +63,15 @@ session_start();
         </div>
         </div>
       </nav>
-      <form method="POST" action="login.php">
+      <form method="POST" action="">
+      <?php echo csrf_field(); ?>
       <div class="container">
         <div class="row px-3">
             <div class="col-md-12 formulaire">
                 <h2>Inscription</h2>
+                <?php if ($erreur !== '') { ?>
+                <p style="color:red; font-weight:bold; font-size:17px"><?php echo htmlspecialchars($erreur); ?></p>
+                <?php } ?>
                 <div class="sousContainer">
                     <div class="row">
                         <div class="col-md-6 ">
@@ -54,7 +93,7 @@ session_start();
                                 <input type="text" placeholder="Entrez votre numéro téléphone " name="numéro_téléphone" required >
                             </div>
                             <div class="input input1">
-                                <input type="password" placeholder="Entrez votre passe" name="mot_de_passe" required >
+                                <input type="password" placeholder="Entrez votre passe" name="mot_de_passe" minlength="8" required >
                             </div>
                         </div>
                         </div>

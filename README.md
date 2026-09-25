@@ -1,61 +1,94 @@
-# FIND&LOSE
+# FIND&LOSE — plateforme d'objets perdus et trouvés
 
-Application web (PHP + MySQL) permettant à des utilisateurs de déclarer des objets perdus ou trouvés (carte d'identité, carte étudiant, passeport, téléphone, ordinateur, tablette) et d'être mis en relation lorsqu'un objet perdu correspond à un objet trouvé.
+![PHP](https://img.shields.io/badge/PHP-8.x-777BB4?logo=php&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-MariaDB-4479A1?logo=mysql&logoColor=white)
+![Bootstrap](https://img.shields.io/badge/Bootstrap-5-7952B3?logo=bootstrap&logoColor=white)
 
-## Stack
+Application web qui met en relation les personnes qui ont **perdu** un objet avec celles qui l'ont **trouvé**. Chacun déclare son objet (pièce d'identité ou appareil électronique) et, dès qu'une déclaration « perdu » correspond à une déclaration « trouvé », les deux utilisateurs reçoivent une notification avec les coordonnées de l'autre pour organiser la restitution.
 
-- PHP (PDO / MySQL), aucun framework
-- Bootstrap 5 (vendored dans `css/vendor/`)
-- MySQL / MariaDB
+Projet réalisé en **PHP natif, sans framework**, afin de maîtriser les fondamentaux du développement web côté serveur : routage par pages, sessions, accès base de données avec PDO, et sécurité applicative.
+
+## Fonctionnalités
+
+- **Comptes utilisateurs** : inscription, connexion, déconnexion, pages protégées par session.
+- **Déclaration d'objets** perdus ou trouvés, avec un formulaire adapté à chaque type :
+  - documents : carte d'identité, carte étudiant, passeport (nom, prénom, date de naissance, numéro unique…) ;
+  - appareils : téléphone, ordinateur, tablette (marque, couleur, date, lieu).
+- **Suivi** de ses propres déclarations (objets perdus / objets trouvés).
+- **Mise en relation automatique** : une page de notifications affiche les correspondances et les coordonnées de la personne à contacter.
+
+## Comment fonctionne la mise en relation
+
+Une déclaration « perdu » et une déclaration « trouvé » faites par deux utilisateurs différents sont considérées comme le même objet si elles sont du même type et que :
+
+| Type d'objet | Critère de correspondance |
+|---|---|
+| Carte d'identité, carte étudiant, passeport | même **numéro unique** (identifiant officiel du document) |
+| Téléphone, ordinateur, tablette | même **marque** et même **couleur** |
+
+- La personne qui a perdu l'objet voit qui l'a trouvé et comment la joindre.
+- La personne qui l'a trouvé voit à qui le rendre.
+
+La logique est isolée dans la fonction `objetsCorrespondent()` de [pages/notifications.php](pages/notifications.php).
+
+## Stack technique
+
+| Couche | Choix |
+|---|---|
+| Back-end | PHP 8 natif (sessions, PDO) |
+| Base de données | MySQL / MariaDB, schéma dans [database/schema.sql](database/schema.sql) |
+| Front-end | HTML, CSS, Bootstrap 5 |
+| Configuration | variables d'environnement via un fichier `.env` (non versionné) |
+
+## Sécurité
+
+Le projet étant public, une attention particulière a été portée à la sécurité :
+
+- **Mots de passe hachés** avec `password_hash()` / `password_verify()` (bcrypt), jamais stockés en clair.
+- **Requêtes préparées PDO** pour toutes les données saisies : pas d'injection SQL possible via les formulaires.
+- **Protection XSS** : toutes les données affichées sont échappées avec `htmlspecialchars()`.
+- **Jetons CSRF** sur tous les formulaires.
+- **Sessions durcies** : cookie `HttpOnly` + `SameSite=Lax` (+ `Secure` en HTTPS), mode strict, ID régénéré à la connexion (anti-fixation), cookie supprimé à la déconnexion.
+- **Validation côté serveur** des champs (en plus des contrôles HTML) : email, longueur du mot de passe, nom d'utilisateur unique.
+- **Aucun secret dans le dépôt** : identifiants de la base lus depuis `.env`, ignoré par git.
+- **Fichiers internes non exposés** : des règles `.htaccess` bloquent l'accès HTTP à `.env`, `.git/`, `config/`, `includes/` et `database/`.
+- **Erreurs non divulguées** : en cas d'échec de connexion à la base, l'utilisateur voit un message générique, le détail part dans les logs serveur.
+
+Le détail des mesures et des limites connues est dans [SECURITY.md](SECURITY.md).
 
 ## Structure du projet
 
 ```
-index.php     Point d'entrée du site (accueil public)
-config/       Connexion à la base de données (lit .env, ne contient aucun secret en dur)
-includes/     Fonctions partagées (ex : require_login())
-database/     Schéma SQL (database/schema.sql)
-pages/        Le reste des pages PHP de l'application
-css/          Feuilles de style (css/vendor/ = librairies tierces)
-images/       Assets images
+├── index.php          Page d'accueil publique
+├── pages/             Pages de l'application (connexion, déclarations, listes, notifications…)
+├── includes/          Fonctions partagées : sessions sécurisées, CSRF, validation, contrôle d'accès
+├── config/            Connexion PDO à la base (lit le fichier .env)
+├── database/          Schéma SQL
+├── css/               Feuilles de style (css/vendor/ : Bootstrap)
+└── images/            Illustrations
 ```
 
-## Installation locale (WAMP)
+## Installation en local
 
-1. Copier `.env.example` vers `.env` et adapter les identifiants à votre configuration MySQL locale :
+**Prérequis** : PHP 8.0+, MySQL ou MariaDB, un serveur Apache (WAMP, XAMPP, MAMP ou LAMP).
+
+1. Cloner le dépôt dans le dossier web du serveur (`www/` pour WAMP, `htdocs/` pour XAMPP) :
+   ```bash
+   git clone https://github.com/MMG262/trouve-perdu.git
    ```
-   DB_HOST=localhost
-   DB_NAME=test
-   DB_USER=root
-   DB_PASS=root
-   DB_CHARSET=utf8mb4
+2. Créer le fichier de configuration à partir de l'exemple, puis y renseigner vos identifiants MySQL :
+   ```bash
+   cp .env.example .env
    ```
-2. Créer la base et les tables :
-   ```
+3. Créer la base de données et les tables :
+   ```bash
    mysql -u root -p < database/schema.sql
    ```
-   (ou importer `database/schema.sql` via phpMyAdmin)
-3. Placer le dossier dans `www/` (WAMP) et démarrer Apache + MySQL.
-4. Ouvrir `http://localhost/FIND&LOSE/`.
+   (ou importer `database/schema.sql` depuis phpMyAdmin)
+4. Démarrer Apache et MySQL, puis ouvrir [http://localhost/trouve-perdu/](http://localhost/trouve-perdu/).
 
-## Pages principales
+**Pour tester la mise en relation** : créer deux comptes, déclarer un objet « perdu » avec le premier, puis le même objet « trouvé » avec le second (même numéro de document, ou même marque et couleur). La correspondance apparaît alors dans l'onglet *Notifications* des deux comptes.
 
-| Page | Rôle |
-|---|---|
-| `index.php` | Accueil public |
-| `pages/login.php` / `pages/register.php` | Connexion / inscription |
-| `pages/dashboard.php` | Accueil utilisateur connecté |
-| `pages/report_lost.php` / `pages/report_found.php` | Choix du type d'objet à déclarer |
-| `pages/id_card.php`, `student_card.php`, `passport.php`, `phone.php`, `laptop.php`, `tablet.php` | Formulaires de déclaration par type d'objet |
-| `pages/lost_items.php` / `pages/found_items.php` | Listes des objets déclarés |
-| `pages/notifications.php` | Correspondances objet perdu / trouvé |
-| `pages/logout.php` | Déconnexion |
+## Auteur
 
-## Sécurité
-
-Voir [SECURITY.md](SECURITY.md) pour le détail des correctifs appliqués et les recommandations restantes avant une mise en production réelle.
-
-## Notes
-
-- Les noms de colonnes en base (`prénom_user`, `numéro_téléphone`, etc.) ont été conservés tels quels pour rester compatibles avec le code existant.
-- Certains fichiers CSS (`id_card.css`, `student_card.css`, `index.css`, `logout.css`, `notifications.css`, `found_items.css`, `laptop.css`, `passport.css`, `tablet.css`, `phone.css`, `register.css`) et images (`id_card.jpg`, `student_card.png`, `magnifier.png`, `laptop.png`, `phone.png`, `passport.jpg`, `search.jpg`) existaient déjà dans le projet d'origine mais ne sont référencés par aucune page — ils ont été renommés pour rester cohérents mais peuvent être supprimés s'ils ne servent pas.
+**Moustapha Gueye** — [github.com/MMG262](https://github.com/MMG262)

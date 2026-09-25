@@ -1,12 +1,13 @@
 <?php
-session_start();
+require_once __DIR__ . '/../includes/security.php';
+start_secure_session();
 require_once __DIR__ . '/../includes/auth.php';
 
 require_login();
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">

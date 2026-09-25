@@ -1,0 +1,8 @@
+# Never serve dotfiles (.env, .gitignore, ...) nor the git repository.
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
+RedirectMatch 404 /\.git(/|$)
+
+# No directory listing.
+Options -Indexes

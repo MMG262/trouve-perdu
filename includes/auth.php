@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 /**
  * Redirects anonymous visitors to the login page. Must be called
- * after session_start(), on every page that requires a logged-in user.
+ * after start_secure_session(), on every page that requires a logged-in user.
  */
 function require_login(): void
 {

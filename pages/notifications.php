@@ -1,5 +1,6 @@
 <?php
-session_start();
+require_once __DIR__ . '/../includes/security.php';
+start_secure_session();
 require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../config/database.php';
 
@@ -65,7 +66,7 @@ foreach ($objetsPerdus as $perdu) {
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -87,7 +88,7 @@ foreach ($objetsPerdus as $perdu) {
                     <a class="nav-link active" id="lien" aria-current="page" href="dashboard.php"><span>Home</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" id="lien" aria-current="page" href="found_items.php"><span>Objets Perdus</span></a>
+                    <a class="nav-link active" id="lien" aria-current="page" href="lost_items.php"><span>Objets Perdus</span></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link active" id="lien" aria-current="page" href="found_items.php"><span>Objets Trouvés</span></a>
